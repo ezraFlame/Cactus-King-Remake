@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     private CharacterController controller;
     private PlayerInput input;
@@ -17,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float gravity = -9.81f;
     private Transform playerCamera;
+    [SerializeField]
+    private Transform eyes;
 
     private void Start() {
         controller = GetComponent<CharacterController>();
@@ -24,9 +27,22 @@ public class PlayerMovement : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         playerCamera = Camera.main.transform;
+        if (IsOwner) FindObjectOfType<Cinemachine.CinemachineVirtualCamera>().Follow = eyes;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        transform.position = new Vector3(0, 2, 0);
     }
 
     private void Update() {
+        if (IsOwner) {
+            Move();
+        }
+    }
+
+    private void Move() {
         grounded = controller.isGrounded;
         if (grounded && velocity.y < 0) velocity.y = -0.25f;
 
