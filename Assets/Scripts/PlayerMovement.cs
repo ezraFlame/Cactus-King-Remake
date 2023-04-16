@@ -21,6 +21,9 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField]
     private Transform eyes;
 
+    [SerializeField]
+    private float inspectDistance;
+
     private void Start() {
         controller = GetComponent<CharacterController>();
         input = GetComponent<PlayerInput>();
@@ -39,6 +42,25 @@ public class PlayerMovement : NetworkBehaviour
     private void Update() {
         if (IsOwner) {
             Move();
+            if (input.actions["Pause"].WasPressedThisFrame()) {
+                if (UIManager.Instance.isInspecting) {
+                    UIManager.Instance.CloseInspect();
+                } else {
+                    UIManager.Instance.TogglePause();
+                }
+            }
+
+            if (input.actions["Inspect"].WasPressedThisFrame() && !UIManager.Instance.paused) {
+                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+                RaycastHit[] hits = Physics.RaycastAll(ray, inspectDistance);
+
+                foreach (RaycastHit hit in hits) {
+                    if (hit.collider.TryGetComponent<MoneyManager>(out MoneyManager moneyManager)) {
+                        UIManager.Instance.OpenInspect(moneyManager.money.Value);
+                        break;
+                    }
+                }
+            }
         }
     }
 

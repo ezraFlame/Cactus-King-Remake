@@ -9,41 +9,44 @@ using System.Threading.Tasks;
 
 public class UIManager : MonoBehaviour
 {
-    public UIManager instance;
+    public static UIManager Instance { get; private set; }
 
     private UnityTransport transport;
 
     [SerializeField]
     private GameObject pauseMenu;
+    [HideInInspector]
     public bool paused;
     [SerializeField]
     private PlayerInput input;
 
     [SerializeField]
-    TMP_InputField ipAddressInput;
+    private TMP_InputField ipAddressInput;
     [SerializeField]
-    TMP_InputField portInput;
+    private TMP_InputField portInput;
+
+    [SerializeField]
+    private TMP_Text moneyText;
+
+    [HideInInspector]
+    public bool isInspecting;
+    [SerializeField]
+    private GameObject inspectMenu;
+    [SerializeField]
+    private TMP_Text inspectMoneyText;
 
     private void Start() {
         pauseMenu.SetActive(false);
         paused = false;
+
+        inspectMenu.SetActive(false);
+        isInspecting = false;
     }
 
     private void Awake() {
         transport = FindObjectOfType<UnityTransport>();
         input = GetComponent<PlayerInput>();
-        instance = this;
-    }
-
-    private void Update() {
-        if (input.actions["Pause"].WasPressedThisFrame()) {
-            paused = !paused;
-            pauseMenu.SetActive(paused);
-            Cursor.visible = paused;
-            FindObjectOfType<Cinemachine.CinemachineVirtualCamera>().enabled = !paused;
-            if (paused) Cursor.lockState = CursorLockMode.None;
-            else Cursor.lockState = CursorLockMode.Locked;
-        }
+        Instance = this;
     }
 
     public void Quit() {
@@ -64,10 +67,34 @@ public class UIManager : MonoBehaviour
 
         NetworkManager.Singleton.Shutdown();
 
-        await Task.Yield();
+        await Task.Delay(500);
 
         transport.ConnectionData.Port = result;
         transport.ConnectionData.Address = ipAddressInput.text;
         NetworkManager.Singleton.StartClient();
+    }
+
+    public void TogglePause() {
+        paused = !paused;
+        pauseMenu.SetActive(paused);
+        Cursor.visible = paused;
+        FindObjectOfType<Cinemachine.CinemachineVirtualCamera>().enabled = !paused;
+        if (paused) Cursor.lockState = CursorLockMode.None;
+        else Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void SetMoneyText(int money) {
+        moneyText.text = "" + money;
+    }
+
+    public void OpenInspect(int money) {
+        isInspecting = true;
+        inspectMenu.SetActive(true);
+        inspectMoneyText.text = "$" + money;
+    }
+
+    public void CloseInspect() {
+        isInspecting = false;
+        inspectMenu.SetActive(false);
     }
 }
