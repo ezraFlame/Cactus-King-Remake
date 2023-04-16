@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using System.Threading.Tasks;
 
 public class UIManager : MonoBehaviour
 {
@@ -50,7 +51,7 @@ public class UIManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void Join() {
+    async public void Join() {
         if (!paused) {
             Debug.Log("You must be paused to join a game!");
             return;
@@ -62,6 +63,9 @@ public class UIManager : MonoBehaviour
         }
 
         NetworkManager.Singleton.Shutdown();
+
+        await Task.Yield();
+
         transport.ConnectionData.Port = result;
         transport.ConnectionData.Address = ipAddressInput.text;
         NetworkManager.Singleton.StartClient();
