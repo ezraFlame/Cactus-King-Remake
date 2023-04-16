@@ -106,6 +106,7 @@ MonoBehaviour:
   jumpHeight: 1
   gravity: -35
   eyes: {fileID: 7872812352827823765}
+  inspectDistance: 2
 --- !u!114 &7872812351599377672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +210,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b87aa46d74ce71386af3c1801fb445f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  money:
+    m_InternalValue: 0
 --- !u!1 &7872812352827823764
 GameObject:
   m_ObjectHideFlags: 0

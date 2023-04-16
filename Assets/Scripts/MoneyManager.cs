@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 public class MoneyManager : NetworkBehaviour
 {
-    public NetworkVariable<int> money = new NetworkVariable<int>(0, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> money = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     public override void OnNetworkSpawn()
     {
@@ -24,6 +24,8 @@ public class MoneyManager : NetworkBehaviour
     }
 
     private void OnMoneyChanged(int previous, int current) {
-        UIManager.Instance.SetMoneyText(current);
+        if (IsOwner) {
+            UIManager.Instance.SetMoneyText(current);
+        }
     }
 }
