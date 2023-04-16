@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 public class UIManager : MonoBehaviour
 {
-    public UIManager instance;
+    public static UIManager Instance { get; private set; }
 
     private UnityTransport transport;
 
@@ -20,9 +20,12 @@ public class UIManager : MonoBehaviour
     private PlayerInput input;
 
     [SerializeField]
-    TMP_InputField ipAddressInput;
+    private TMP_InputField ipAddressInput;
     [SerializeField]
-    TMP_InputField portInput;
+    private TMP_InputField portInput;
+
+    [SerializeField]
+    private TMP_Text moneyText;
 
     private void Start() {
         pauseMenu.SetActive(false);
@@ -32,7 +35,7 @@ public class UIManager : MonoBehaviour
     private void Awake() {
         transport = FindObjectOfType<UnityTransport>();
         input = GetComponent<PlayerInput>();
-        instance = this;
+        Instance = this;
     }
 
     private void Update() {
@@ -69,5 +72,9 @@ public class UIManager : MonoBehaviour
         transport.ConnectionData.Port = result;
         transport.ConnectionData.Address = ipAddressInput.text;
         NetworkManager.Singleton.StartClient();
+    }
+
+    public void SetMoneyText(int money) {
+        moneyText.text = "" + money;
     }
 }

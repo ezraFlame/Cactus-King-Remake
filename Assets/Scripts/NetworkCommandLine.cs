@@ -11,8 +11,6 @@ public class NetworkCommandLine : MonoBehaviour
     {
         netManager = GetComponent<NetworkManager>();
 
-        if (Application.isEditor) return;
-
         var args = GetCommandlineArgs();
 
         #if UNITY_SERVER
