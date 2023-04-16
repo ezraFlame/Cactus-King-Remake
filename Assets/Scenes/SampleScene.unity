@@ -374,7 +374,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64455efa1db461bb2bab533dfe7c1004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  instance: {fileID: 0}
   pauseMenu: {fileID: 241691249}
+  paused: 0
   input: {fileID: 0}
   ipAddressInput: {fileID: 1944774272}
   portInput: {fileID: 1118593186}
@@ -2045,7 +2047,7 @@ MonoBehaviour:
   ConnectionData:
     Address: 127.0.0.1
     Port: 7777
-    ServerListenAddress: 127.0.0.1
+    ServerListenAddress: 0.0.0.0
   DebugSimulator:
     PacketDelayMS: 0
     PacketJitterMS: 0
